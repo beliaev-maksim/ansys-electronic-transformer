@@ -331,12 +331,17 @@
           </callbacks>
         </property>
 
-        <property name="resistance" caption="Load Resistance [Ohm]" control="float" default="1" visible="False">
-          <help>Load resistance specified for Secondary, Tertiary, etc sides</help>
-          <callbacks>
-            <OnValidate>GThanZero</OnValidate>
-          </callbacks>
-        </property>
+        <propertytable name="table_resistance" caption="Side loads:" control="custom" display="worksheet"
+                       class="Worksheet.TabularDataEditor.TabularDataEditor">
+          <help>Resistance specified for Primary, Secondary, etc sides</help>
+
+          <property name="side" caption="Side #" control="integer" readonly="True"/>
+          <property name="resistance" caption="Resistance [Ohm]" control="float">
+            <callbacks>
+              <OnValidate>validate_resistance</OnValidate>
+            </callbacks>
+          </property>
+        </propertytable>
 
         <property name="offset" caption="Region offset [%]" control="integer" default="50">
           <callbacks>
