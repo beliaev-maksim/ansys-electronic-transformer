@@ -140,6 +140,7 @@
 
 
       <propertygroup name="winding_properties" caption="Winding Definition  [2/3]">
+        <property control="boolean" name="skip_check" caption="Skip check windings accommodation" default="False"/>
         <property name="layer_type" caption="Transformer:" control="select" default="Wound">
           <attributes options="Planar,Wound"/>
           <callbacks>
@@ -245,9 +246,6 @@
             <property name="layer" caption="No. of layer" control="integer" readonly="True"/>
           </propertytable>
         </propertygroup>
-
-        <property control="boolean" name="skip_check" caption="Skip check windings accommodation"
-                  default="False"/>
       </propertygroup>
 
       <callbacks>
@@ -277,6 +275,8 @@
           border-color="Transparent"/>
 
       <propertygroup name="define_setup" caption="Analysis Setup [3/3]">
+        <property name="full_model" caption="Make full model" control="boolean" default="False"/>
+
         <property name="core_material" caption="Core Material:" control="select" default="3C15">
           <attributes options="3C15"/>
         </property>
@@ -349,8 +349,6 @@
             <OnValidate>GThanZero</OnValidate>
           </callbacks>
         </property>
-
-        <property name="full_model" caption="Make full model" control="boolean" default="False"/>
 
         <property name="project_path" caption="Save to:" control="folderopen"/>
 
