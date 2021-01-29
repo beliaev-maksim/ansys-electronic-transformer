@@ -390,19 +390,12 @@ class Step2(object):
         # read data for step 2
         winding_def = transformer_definition["winding_definition"]
         self.winding_prop.Properties["layer_type"].Value = winding_def["layer_type"]
-
         self.winding_prop.Properties["number_of_layers"].Value = int(winding_def["number_of_layers"])
-
         self.winding_prop.Properties["layer_spacing"].Value = float(winding_def["layer_spacing"])
-
         self.winding_prop.Properties["bobbin_board_thickness"].Value = float(winding_def["bobbin_board_thickness"])
-
         self.winding_prop.Properties["top_margin"].Value = float(winding_def["top_margin"])
-
         self.winding_prop.Properties["side_margin"].Value = float(winding_def["side_margin"])
-
         self.winding_prop.Properties["include_bobbin"].Value = winding_def["include_bobbin"]
-
         self.winding_prop.Properties["conductor_type"].Value = winding_def["conductor_type"]
 
         if self.conductor_type.Value == "Circular":
@@ -428,6 +421,8 @@ class Step2(object):
             for prop in list_of_prop:
                 if prop in ["segments_number", "turns_number"]:
                     table.Properties[prop].Value = int(layer_dict[prop])
+                elif prop == "insulation_thickness" and self.layer_type.Value == "Planar":
+                    table.Properties[prop].Value = float(layer_dict["turn_spacing"])
                 else:
                     table.Properties[prop].Value = float(layer_dict[prop])
 
@@ -509,7 +504,12 @@ class Step2(object):
         for i in range(1, int(winding_definition["number_of_layers"]) + 1):
             layer_dict = OrderedDict()
             for prop in list_of_prop:
-                layer_dict[prop] = table.Value[xml_path_to_table + "/" + prop][i - 1]
+                prop_name = prop
+                if prop == "insulation_thickness" and self.layer_type.Value == "Planar":
+                    prop_name = "turn_spacing"
+
+                layer_dict[prop_name] = table.Value[xml_path_to_table + "/" + prop][i - 1]
+
             layer_dict["turns_number"] = int(table.Value[xml_path_to_table + "/turns_number"][i - 1])
             winding_definition["layers_definition"]["layer_" + str(i)] = layer_dict
 

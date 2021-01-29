@@ -425,7 +425,7 @@ class ECore(Cores):
                 conductor_width = float(winding_parameters_dict[layer_name]["conductor_width"])
                 conductor_height = float(winding_parameters_dict[layer_name]["conductor_height"])
                 num_of_turns = int(winding_parameters_dict[layer_name]["turns_number"])
-                turn_spacing = float(winding_parameters_dict[layer_name]["insulation_thickness"])
+                turn_spacing = float(winding_parameters_dict[layer_name]["turn_spacing"])
 
                 if self.include_bobbin:
                     self.draw_board(slot_height, dim_d2, dim_d3,
