@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-
+#
+# copyright 2021, ANSYS Inc. Unauthorized use, distribution or duplication is prohibited.
+#
 #            Replacement of old ETK (Electronic Transformer Kit) for Maxwell
 #
 #            ACT Written by : Maksim Beliaev (maksim.beliaev@ansys.com)
 #            Tested by: Mark Christini (mark.christini@ansys.com)
-#            Last updated : 18.01.2021
+#            Last updated : 26.01.2021
 import copy
 import datetime
 import os

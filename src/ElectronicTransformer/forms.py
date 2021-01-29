@@ -1,3 +1,6 @@
+#
+# copyright 2021, ANSYS Inc. Unauthorized use, distribution or duplication is prohibited.
+#
 from abc import ABCMeta, abstractmethod
 import clr
 import ctypes  # lib to get screen resolution

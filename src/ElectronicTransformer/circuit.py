@@ -1,3 +1,4 @@
+# copyright 2021, ANSYS Inc. Unauthorized use, distribution or duplication is prohibited.
 import copy
 
 

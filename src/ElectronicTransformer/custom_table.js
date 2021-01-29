@@ -1,3 +1,4 @@
+// copyright 2021, ANSYS Inc. Unauthorized use, distribution or duplication is prohibited.
 define(
 	[
 		'scripts/knockout-3.3.0', 'scripts/ACTComponent.js',

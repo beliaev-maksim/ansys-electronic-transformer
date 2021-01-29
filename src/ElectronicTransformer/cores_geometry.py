@@ -1,12 +1,12 @@
-# already done: E, EI, ETD = EC = EQ = ER(with argument), EFD, EP, PQ, P=PH=PT(with    argument), RM, U, UI
-
-# super class Cores
-# all sub classes for core creation will inherit from here basic parameters from GUI and
-# take all functions for primitive creation like createBox, createPolyhedron, move, rename and so on
+# copyright 2021, ANSYS Inc. Unauthorized use, distribution or duplication is prohibited.
 import math
 
 
 class Cores(object):
+    """
+        all sub classes for core creation will inherit from here basic parameters from GUI and
+        take all functions for primitive creation like create_box, create_polyhedron, move, rename and so on
+    """
     CS = 'Global'
 
     def __init__(self, args_list):
