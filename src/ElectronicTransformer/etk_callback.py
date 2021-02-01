@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# copyright 2021, ANSYS Inc. Unauthorized use, distribution or duplication is prohibited.
+# copyright 2021, ANSYS Inc. Software is released under GNU license
 #
 #            Replacement of old ETK (Electronic Transformer Kit) for Maxwell
 #
