@@ -987,7 +987,7 @@ class TransformerClass(Step1, Step2, Step3):
             layer = section.split("_")[0]
             layer_num = layer[5:]
 
-            point_terminal = True  # if int(side) > 1 else False  # todo does it matter in external circuit?
+            point_terminal = True
             self.module_boundary_setup.AssignCoilTerminal(
                 [
                     "NAME:" + section,
