@@ -1063,7 +1063,7 @@ class ETDCore(PQCore):
 
         self.oEditor.FitAll()
 
-        self.draw_winding(self.e_dim_d2, self.e_dim_d3, self.e_dim_d5, self.e_dim_d6)
+        self.draw_winding(self.e_dim_d2, self.e_dim_d3, self.dim_d5, self.e_dim_d6)
 
 
 # RMCore inherit from PQCore functions DrawWdg, CreateSingleTurn, draw_bobbin
