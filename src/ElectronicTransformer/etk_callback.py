@@ -9,18 +9,27 @@
 #            Last updated : 26.01.2021
 import copy
 import datetime
+import json
 import os
 import re
 import shutil
-from webbrowser import open as webopen
-from collections import OrderedDict
-import json
+import sys
 from abc import ABCMeta, abstractmethod
+from collections import OrderedDict
+from webbrowser import open as webopen
 
-# all below imports are done by ACT, here they are listed for information purpose to increase transparency
-# from .cores_geometry import ECore, EFDCore, EICore, EPCore, ETDCore, PCore, PQCore, UCore, UICore, RMCore
-# from .value_checker import check_core_dimensions
-# from .forms import WindingForm, ConnectionForm
+# all below imports are done via appending sys path due to ACT import limitations
+root_folder = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(root_folder)
+from cores_geometry import ECore, EFDCore, EICore, EPCore, ETDCore, PCore, PQCore, UCore, UICore, RMCore
+from circuit import Circuit
+
+try:
+    a = ExtAPI  # will work only when running from ACT
+    from value_checker import check_core_dimensions
+    from forms import WindingForm, ConnectionForm
+except NameError:
+    pass
 
 # object to save UI settings that are cross shared between classes
 transformer_definition = OrderedDict()
@@ -1285,18 +1294,16 @@ class TransformerClass(Step1, Step2, Step3):
         frequency = str(adapt_freq) + 'kHz'
 
         sweep = transformer_definition["setup_definition"]["frequency_sweep_definition"]
-        start_frequency = str(sweep["start_frequency"])
-        start_frequency_unit = str(sweep["start_frequency_unit"])
-        stop_frequency = str(sweep["stop_frequency"])
-        stop_frequency_unit = str(sweep["stop_frequency_unit"])
+        if sweep["frequency_sweep"]:
+            start_frequency = str(sweep["start_frequency"])
+            start_frequency_unit = str(sweep["start_frequency_unit"])
+            stop_frequency = str(sweep["stop_frequency"])
+            stop_frequency_unit = str(sweep["stop_frequency_unit"])
 
-        start_sweep_freq = str(start_frequency) + start_frequency_unit
+            start_sweep_freq = str(start_frequency) + start_frequency_unit
+            stop_sweep_freq = str(stop_frequency) + stop_frequency_unit
+            samples = int(sweep["samples"])
 
-        stop_sweep_freq = str(stop_frequency) + stop_frequency_unit
-
-        samples = int(sweep["samples"])
-
-        if sweep:
             if sweep["scale"] == 'Linear':
                 self.insert_setup(max_num_passes, percent_error, frequency, True,
                                   'LinearCount', start_sweep_freq, stop_sweep_freq, samples)

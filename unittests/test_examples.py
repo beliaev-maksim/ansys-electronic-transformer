@@ -1,13 +1,9 @@
-import copy
 import json
 import os
 from unittest import TestCase
 from AEDTLib.Desktop import Desktop
 
 import src.ElectronicTransformer.etk_callback as etk
-from src.ElectronicTransformer.circuit import Circuit
-from src.ElectronicTransformer.cores_geometry import (ECore, EFDCore, EICore, EPCore, ETDCore,
-                                                      PCore, PQCore, UCore, UICore, RMCore)
 
 
 class BaseAEDT(TestCase):
@@ -23,17 +19,6 @@ class BaseAEDT(TestCase):
         cls.tests_dir = os.path.abspath(os.path.dirname(__file__))
         cls.root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
         etk.oDesktop = cls.desktop._main.oDesktop
-        etk.ECore = ECore
-        etk.EFDCore = EFDCore
-        etk.EICore = EICore
-        etk.EPCore = EPCore
-        etk.ETDCore = ETDCore
-        etk.PCore = PCore
-        etk.PQCore = PQCore
-        etk.UCore = UCore
-        etk.UICore = UICore
-        etk.RMCore = RMCore
-        etk.Circuit = Circuit
 
     @classmethod
     def tearDownClass(cls):
