@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 from unittest import TestCase
 from AEDTLib.Desktop import Desktop
 from AEDTLib.Maxwell import Maxwell3D
@@ -8,6 +9,7 @@ import src.ElectronicTransformer.etk_callback as etk
 
 
 class BaseAEDT(TestCase):
+    transformer = None
     desktop = None
     project = None
     tests_dir = None
@@ -37,6 +39,18 @@ class BaseAEDT(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.desktop.release_desktop(close_projects=True)
+
+        project_file = os.path.join(cls.tests_dir, cls.transformer.design_name + '.aedt')
+        if os.path.isfile(project_file):
+            os.remove(project_file)
+
+        project_results = project_file + "results"
+        if os.path.isdir(project_results):
+            shutil.rmtree(project_results)
+
+        json_file = os.path.join(cls.tests_dir, cls.transformer.design_name + '_parameters.json')
+        if os.path.isfile(json_file):
+            os.remove(json_file)
 
     def vertex_from_edge_coord(self, coord, name, sort_key=1):
         edge = self.m3d.modeler.primitives.get_edgeid_from_position(coord, obj_name=name)
