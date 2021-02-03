@@ -13,6 +13,7 @@ class BaseAEDT(TestCase):
     tests_dir = None
     root_dir = None
     m3d = None
+    input_file = None
 
     @classmethod
     def setUpClass(cls):
@@ -21,6 +22,17 @@ class BaseAEDT(TestCase):
         cls.tests_dir = os.path.abspath(os.path.dirname(__file__))
         cls.root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
         etk.oDesktop = cls.desktop._main.oDesktop
+
+        with open(os.path.join(cls.root_dir, cls.input_file)) as file:
+            etk.transformer_definition = json.load(file)
+        etk.transformer_definition["setup_definition"]["project_path"] = cls.tests_dir
+
+        cls.transformer = etk.TransformerClass(None)
+        cls.transformer.read_material_data()
+        cls.transformer.project = cls.project
+        cls.transformer.setup_analysis()
+        cls.transformer.design.Analyze("Setup1")
+        cls.m3d = Maxwell3D()
 
     @classmethod
     def tearDownClass(cls):
@@ -37,22 +49,12 @@ class BaseAEDT(TestCase):
 class TestIEEE(BaseAEDT):
     @classmethod
     def setUpClass(cls):
+        cls.input_file = r"src/ElectronicTransformer/examples/Demo_IEEE.json"
         super(TestIEEE, cls).setUpClass()
 
-        cls.transformer = etk.TransformerClass(None)
-        cls.transformer.read_material_data()
-        with open(os.path.join(cls.root_dir, "src/ElectronicTransformer/examples/Demo_IEEE.json")) as file:
-            etk.transformer_definition = json.load(file)
-        etk.transformer_definition["setup_definition"]["project_path"] = cls.tests_dir
-
-        cls.transformer.project = cls.project
-        cls.transformer.setup_analysis()
-        cls.transformer.design.Analyze("Setup1")
-        cls.m3d = Maxwell3D()
-
-    def test_01_airgap(self):
+    def test_01_air_gap(self):
         """
-        Check that airgap exists only on central leg
+        Check that air gap exists only on central leg
         """
         vertex_coord = self.vertex_from_edge_coord((0, 0, 1.08), "I_Core")
         self.assertListEqual(vertex_coord[0], [0.0, -2.5, 1.08])
@@ -96,7 +98,7 @@ class TestIEEE(BaseAEDT):
         """
         Test board XYZ dimensions
         """
-        # legth X
+        # length X
         vertex_coord = self.vertex_from_edge_coord((-2, 6.5, 1.01), "Board_8", sort_key=0)
         self.assertListEqual(vertex_coord[0], [-5.5, 6.5, 1.01])
         self.assertListEqual(vertex_coord[1], [0.0, 6.5, 1.01])
@@ -124,4 +126,3 @@ class TestIEEE(BaseAEDT):
 
         for actual, ref in zip(loss_list, reference_loss):
             self.assertAlmostEqual(actual, ref, delta=ref*0.02)
-
