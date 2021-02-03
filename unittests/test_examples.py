@@ -9,6 +9,7 @@ import src.ElectronicTransformer.etk_callback as etk
 
 
 class BaseAEDT(TestCase):
+    report_path = None
     transformer = None
     desktop = None
     project = None
@@ -23,6 +24,7 @@ class BaseAEDT(TestCase):
         cls.project = cls.desktop._main.oDesktop.NewProject()
         cls.tests_dir = os.path.abspath(os.path.dirname(__file__))
         cls.root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+        cls.report_path = os.path.join(cls.tests_dir, "report.tab")
         etk.oDesktop = cls.desktop._main.oDesktop
 
         with open(os.path.join(cls.root_dir, cls.input_file)) as file:
@@ -55,6 +57,9 @@ class BaseAEDT(TestCase):
         circuit_file = os.path.join(cls.tests_dir, cls.transformer.design_name + '"_circuit.sph"')
         if os.path.isfile(circuit_file):
             os.remove(circuit_file)
+
+        if os.path.isfile(cls.report_path):
+            os.remove(cls.report_path)
 
     def vertex_from_edge_coord(self, coord, name, sort_key=1):
         edge = self.m3d.modeler.primitives.get_edgeid_from_position(coord, obj_name=name)
@@ -163,7 +168,8 @@ class TestIEEE(BaseAEDT):
         Validate that SolidLoss are in range of 2% compared to reference
         """
         loss_data = self.m3d.post.get_report_data(expression="SolidLoss")
-        loss_list = loss_data.data_magnitude()
+        loss_list = loss_data.data_magnitude(convert_to_SI=True)
+        print(loss_list)
         reference_loss = [3.081896003, 1.74967242, 0.58353638669999996,
                           0.14452348509999999, 0.034080710239999999, 0.0089145264179999999,
                           0.0027996223349999998, 0.0010978606290000001, 0.0005911507562,
@@ -177,7 +183,8 @@ class TestIEEE(BaseAEDT):
         Validate that CoreLoss are in range of 2% compared to reference
         """
         loss_data = self.m3d.post.get_report_data(expression="CoreLoss")
-        loss_list = loss_data.data_magnitude()
+        loss_list = loss_data.data_magnitude(convert_to_SI=True)
+        print(loss_list)
         reference_loss = [0.0009165, 0.0016513400000000001, 0.00167483, 0.0012181500000000001,
                           0.00079955, 0.00051217400000000001, 0.00032644199999999998, 0.000207872,
                           0.000132342, 8.4305400000000001e-05, 1.2810999999999999e-06]
@@ -190,20 +197,17 @@ class TestIEEE(BaseAEDT):
         Validate that leakage is in range of 2% difference
         """
         self.set_freq_units("Leakage Inductance")
-        report_path = os.path.join(self.tests_dir, "leakage.tab")
-        self.transformer.module_report.ExportToFile("Leakage Inductance", report_path, False)
+        self.transformer.module_report.ExportToFile("Leakage Inductance", self.report_path, False)
 
         reference_path = os.path.join(self.tests_dir, "reference_results", "ieee_leakage.tab")
-        with open(reference_path) as ref_file, open(report_path) as actual_file:
+        with open(reference_path) as ref_file, open(self.report_path) as actual_file:
             next(ref_file)
-            for line in ref_file:
-                ref_result = [float(val) for val in line.split()]
-
             next(actual_file)
-            for line in actual_file:
-                actual_result = [float(val) for val in line.split()]
 
-            for actual, ref in zip(actual_result, ref_result):
-                self.assertAlmostEqual(actual, ref, delta=ref*0.02, msg="Error at frequency {}".format(ref_result[0]))
+            for line1, line2 in zip(ref_file, actual_file):
+                ref_result = [float(val) for val in line1.split()]
+                actual_result = [float(val) for val in line2.split()]
 
-        os.remove(report_path)
+                for actual, ref in zip(actual_result, ref_result):
+                    self.assertAlmostEqual(actual, ref, delta=ref*0.02,
+                                           msg="Error at frequency {}kHz".format(ref_result[0]))

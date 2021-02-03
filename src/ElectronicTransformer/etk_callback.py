@@ -463,7 +463,12 @@ class Step2(object):
             # file does not exist, copy it from root location
             if not os.path.exists(lib_path):
                 os.makedirs(lib_path)
-            shutil.copy(os.path.join(ExtAPI.Extension.InstallDir, "material_properties.json"), materials_json)
+            try:
+                install_dir = ExtAPI.Extension.InstallDir
+            except NameError:
+                install_dir = os.path.abspath(os.path.dirname(__file__))
+
+            shutil.copy(os.path.join(install_dir, "material_properties.json"), materials_json)
 
         with open(materials_json) as file:
             self.materials = json.load(file)
@@ -1790,8 +1795,8 @@ class TransformerClass(Step1, Step2, Step3):
         Generate Transformer geometry
         :return:
         """
-        time_now = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-        self.design_name = 'Transformer_' + time_now
+        time_now = datetime.datetime.now().strftime('%y%m%d_%H_%M_%S')
+        self.design_name = 'ETK_' + time_now
 
         self.project.InsertDesign("Maxwell 3D", self.design_name, "EddyCurrent", "")
         self.design = self.project.SetActiveDesign(self.design_name)

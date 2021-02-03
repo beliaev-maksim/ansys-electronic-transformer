@@ -81,8 +81,8 @@
     "setup_definition": {
         "core_material": "3F3", 
         "coil_material": "Copper", 
-        "adaptive_frequency": "500000.0", 
-        "draw_skin_layers": false, 
+        "adaptive_frequency": "500.0",
+        "draw_skin_layers": true,
         "percentage_error": "1.0", 
         "number_passes": 5, 
         "transformer_sides": 4, 
