@@ -63,6 +63,33 @@ class BaseAEDT(TestCase):
         vertex_coord.sort(key=lambda x: x[sort_key])
         return vertex_coord
 
+    def set_freq_units(self, plot):
+        """
+        Set primary frequency units for report to kHz
+        """
+        self.transformer.module_report.ChangeProperty(
+            [
+                "NAME:AllTabs",
+                [
+                    "NAME:Data Filter",
+                    [
+                        "NAME:PropServers",
+                        plot + ":PrimarySweepDrawing"
+                    ],
+                    [
+                        "NAME:ChangedProps",
+                        [
+                            "NAME:Number Format",
+                            "Value:="	, "Scientific"
+                        ],
+                        [
+                            "NAME:Units",
+                            "Value:="		, "kHz"
+                        ]
+                    ]
+                ]
+            ])
+
 
 class TestIEEE(BaseAEDT):
     @classmethod
@@ -136,7 +163,7 @@ class TestIEEE(BaseAEDT):
         Validate that SolidLoss are in range of 2% compared to reference
         """
         loss_data = self.m3d.post.get_report_data(expression="SolidLoss")
-        loss_list = loss_data.data_real()
+        loss_list = loss_data.data_magnitude()
         reference_loss = [3.081896003, 1.74967242, 0.58353638669999996,
                           0.14452348509999999, 0.034080710239999999, 0.0089145264179999999,
                           0.0027996223349999998, 0.0010978606290000001, 0.0005911507562,
@@ -144,3 +171,39 @@ class TestIEEE(BaseAEDT):
 
         for actual, ref in zip(loss_list, reference_loss):
             self.assertAlmostEqual(actual, ref, delta=ref*0.02)
+
+    def test_06_core_loss(self):
+        """
+        Validate that CoreLoss are in range of 2% compared to reference
+        """
+        loss_data = self.m3d.post.get_report_data(expression="CoreLoss")
+        loss_list = loss_data.data_magnitude()
+        reference_loss = [0.0009165, 0.0016513400000000001, 0.00167483, 0.0012181500000000001,
+                          0.00079955, 0.00051217400000000001, 0.00032644199999999998, 0.000207872,
+                          0.000132342, 8.4305400000000001e-05, 1.2810999999999999e-06]
+
+        for actual, ref in zip(loss_list, reference_loss):
+            self.assertAlmostEqual(actual, ref, delta=ref*0.02)
+
+    def test_07_leakage_inductance(self):
+        """
+        Validate that leakage is in range of 2% difference
+        """
+        self.set_freq_units("Leakage Inductance")
+        report_path = os.path.join(self.tests_dir, "leakage.tab")
+        self.transformer.module_report.ExportToFile("Leakage Inductance", report_path, False)
+
+        reference_path = os.path.join(self.tests_dir, "reference_results", "ieee_leakage.tab")
+        with open(reference_path) as ref_file, open(report_path) as actual_file:
+            next(ref_file)
+            for line in ref_file:
+                ref_result = [float(val) for val in line.split()]
+
+            next(actual_file)
+            for line in actual_file:
+                actual_result = [float(val) for val in line.split()]
+
+            for actual, ref in zip(actual_result, ref_result):
+                self.assertAlmostEqual(actual, ref, delta=ref*0.02, msg="Error at frequency {}".format(ref_result[0]))
+
+        os.remove(report_path)
