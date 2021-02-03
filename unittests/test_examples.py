@@ -52,6 +52,10 @@ class BaseAEDT(TestCase):
         if os.path.isfile(json_file):
             os.remove(json_file)
 
+        circuit_file = os.path.join(cls.tests_dir, cls.transformer.design_name + '"_circuit.sph"')
+        if os.path.isfile(circuit_file):
+            os.remove(circuit_file)
+
     def vertex_from_edge_coord(self, coord, name, sort_key=1):
         edge = self.m3d.modeler.primitives.get_edgeid_from_position(coord, obj_name=name)
         vertices = self.m3d.modeler.primitives.get_edge_vertices(edge)

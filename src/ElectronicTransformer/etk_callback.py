@@ -2006,7 +2006,8 @@ class TransformerClass(Step1, Step2, Step3):
         Export circuit from Maxwell Circuit design and import into Maxwell Eddy Current
         :return:
         """
-        circuit_path = os.path.join(self.project.GetPath(), self.design_name + "_circuit.sph")
+        circuit_path = os.path.join(transformer_definition["setup_definition"]["project_path"],
+                                    self.design_name + "_circuit.sph")
         self.circuit.design.ExportNetlist("", circuit_path)
 
         self.module_boundary_setup.EditExternalCircuit(circuit_path, [], [], [], [])  # import circuit
