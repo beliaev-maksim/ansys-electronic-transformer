@@ -98,6 +98,10 @@ class BaseAEDT(TestCase):
     def compare_leakage(self, ref_name):
         """
         exports leakage report and compares all values for tolerance of 2%
+        Args:
+            ref_name: file of reference output under "reference_results" folder
+
+        Returns: None
         """
         self.set_freq_units("Leakage Inductance")
         self.transformer.module_report.ExportToFile("Leakage Inductance", self.report_path, False)
@@ -114,6 +118,32 @@ class BaseAEDT(TestCase):
                 for actual, ref in zip(actual_result, ref_result):
                     self.assertAlmostEqual(actual, ref, delta=ref*0.02,
                                            msg="Error at frequency {}kHz".format(ref_result[0]))
+
+    def compare_loss(self, loss_type, reference_list):
+        """
+        Compare Core/Solid loss data with reference
+        Args:
+            loss_type (str): SolidLoss/CoreLoss
+            reference_list: list with reference results
+
+        Returns: None
+        """
+        loss_data = self.m3d.post.get_report_data(expression=loss_type)
+        loss_list = loss_data.data_magnitude(convert_to_SI=True)
+
+        for actual, ref in zip(loss_list, reference_list):
+            self.assertAlmostEqual(actual, ref, delta=ref*0.02)
+
+    def compare_json(self):
+        """
+        Compare that generated JSON file is the same as example file
+        Returns:None
+        """
+        json_file = os.path.join(self.tests_dir, self.transformer.design_name + '_parameters.json')
+        with open(json_file) as actual, open(os.path.join(self.root_dir, self.input_file)) as ref:
+            actual_data = json.load(actual)
+            ref_data = json.load(ref)
+        self.assertDictEqual(actual_data, ref_data)
 
 
 class TestIEEE(BaseAEDT):
@@ -187,28 +217,26 @@ class TestIEEE(BaseAEDT):
         """
         Validate that SolidLoss are in range of 2% compared to reference
         """
-        loss_data = self.m3d.post.get_report_data(expression="SolidLoss")
-        loss_list = loss_data.data_magnitude(convert_to_SI=True)
         reference_loss = [3.080731857, 1.748884788, 0.5832313415, 0.1444371145, 0.03405255505, 0.008900580792,
                           0.002791398746, 0.001092512493, 0.0005868312835, 0.0005630288807, 0.0004394943406]
-
-        for actual, ref in zip(loss_list, reference_loss):
-            self.assertAlmostEqual(actual, ref, delta=ref*0.02)
+        self.compare_loss("SolidLoss", reference_loss)
 
     def test_06_core_loss(self):
         """
         Validate that CoreLoss are in range of 2% compared to reference
         """
-        loss_data = self.m3d.post.get_report_data(expression="CoreLoss")
-        loss_list = loss_data.data_magnitude(convert_to_SI=True)
         reference_loss = [0.000917459, 0.00165295, 0.00167635, 0.00121922, 0.000800248, 0.000512619,
                           0.000326723, 0.00020805, 0.000132453, 0.000126782, 8.43752e-05]
-
-        for actual, ref in zip(loss_list, reference_loss):
-            self.assertAlmostEqual(actual, ref, delta=ref*0.02)
+        self.compare_loss("CoreLoss", reference_loss)
 
     def test_07_leakage_inductance(self):
         """
         Validate that leakage is in range of 2% difference
         """
         self.compare_leakage("ieee_leakage.tab")
+
+    def test_08_json(self):
+        """
+        Compare that generated JSON file is the same as example file
+        """
+        self.compare_json()
