@@ -74,6 +74,7 @@ class Circuit:
                 if not isinstance(val, dict):
                     target_dict.pop(key)
                     target_dict["S99999"] = {key: "Layer"}
+                    break
 
     def create_component(self, name, x, y, angle=0):
         x *= self.grid_cell_size * 4
