@@ -1,6 +1,7 @@
 *.aedt
+*.sph
 *.aedtresults
-Transformer*parameters.json
+ETK*parameters.json
 
 # User-specific files
 *.rsuser
