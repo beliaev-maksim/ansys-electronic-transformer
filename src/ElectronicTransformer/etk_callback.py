@@ -143,22 +143,31 @@ class Step1(object):
         """
 
         examples_folder = os.path.join(ExtAPI.Extension.InstallDir, "examples").replace("/", "\\")
-        self.read_data(_sender, _args, default_path=examples_folder)
+        self.read_data(_sender, _args, default_path=examples_folder, ext_filter="*.jpg")
 
-    def read_data(self, _sender, _args, default_path=""):
+    def read_data(self, _sender, _args, default_path="", ext_filter=""):
         """
         Function called when click button Read Settings From File. Parse json file with settings and dump them to
         transformer definition object
         :param default_path: path to the folder that should be opened
+        :param ext_filter: additional filter for file types
         :param _sender: unused standard event
         :param _args: unused standard event
         :return: None
         """
         global transformer_definition
-        path = ExtAPI.UserInterface.UIRenderer.ShowFileOpenDialog('Text Files(*.json;)|*.json;', default_path)
+        file_filter = 'Input Files(*.json;{0})|*.json;{0}'.format(ext_filter)
+        path = ExtAPI.UserInterface.UIRenderer.ShowFileOpenDialog(file_filter, default_path)
 
         if path is None:
             return
+
+        if path.endswith(".jpg"):
+            webopen(path)
+
+        path = path.replace(".jpg", ".json")
+        if not os.path.isfile(path):
+            add_error_message("Input File does not exist: " + path)
 
         with open(path, "r") as input_f:
             try:
