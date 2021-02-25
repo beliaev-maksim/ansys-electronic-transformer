@@ -49,7 +49,7 @@ Software is distributed under [GNU License](LICENSE)
  2. Clone your fork to local machine
  3. Implement changes in new branch 
  4. Push your branch to your fork
- 5. create a Pull Request for merging
+ 5. Create a Pull Request for merging
  
  Note: all code changes should follow as much as possible PEP8 guideline and all unittests should pass validation
  

@@ -2011,7 +2011,7 @@ class TransformerClass(Step1, Step2, Step3):
                                self.project, self.design_name,
                                current=current, voltage=voltage,
                                resistance_list=setup_def["side_loads"],
-                               frequency=setup_def["adaptive_frequency"])
+                               frequency=setup_def["adaptive_frequency"]*1000)
         self.circuit.create()
         self.project.SetActiveDesign(self.design_name)
 
