@@ -1,6 +1,9 @@
 #
 # copyright 2021, ANSYS Inc. Software is released under GNU license
 #
+import math
+
+
 def segmentation_angle_check(step, prop):
     if not (0 <= float(prop.Value) < 20):
         prop.Value = 0
@@ -62,6 +65,7 @@ def validate_resistance(step, prop):
         if float(table.Value[xml_path + '/' + prop.Name][i]) <= 0:
             table.Value[xml_path + '/' + prop.Name][i] = 1e-6
             return add_error_message(str(prop.Caption) + ' must be greater than zero!')
+
 
 def validate_aedt_version():
     """Raise error message for unsupported versions"""

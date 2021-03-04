@@ -260,7 +260,7 @@ class Step1(object):
         :return:
         """
         self.supplier.Options.Clear()
-        for key in sorted(self.cores_database.keys()):
+        for key in sorted(self.cores_database.keys(), key=lambda x: x.lower()):
             self.supplier.Options.Add(key)
 
         self.supplier.Value = self.supplier.Options[0]
