@@ -234,8 +234,8 @@ class Step1(object):
         update_ui(self.step1)
 
     def callback_step1(self):
-        check_core_dimensions(self.step1)
         self.collect_ui_data_step1()
+        check_core_dimensions(transformer_definition)
 
     def show_core_img(self):
         """invoked to change image and core dimensions when supplier or core type changed"""
