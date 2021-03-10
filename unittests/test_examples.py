@@ -161,23 +161,7 @@ class TestIEEE(BaseAEDT):
         cls.input_file = r"src/ElectronicTransformer/examples/Demo_IEEE.json"
         super(TestIEEE, cls).setUpClass()
 
-    def test_01_air_gap(self):
-        """
-        Check that air gap exists only on central leg
-        """
-        vertex_coord = self.vertex_from_edge_coord((0, 0, 1.08), "I_Core")
-        self.assertListEqual(vertex_coord[0], [0.0, -2.5, 1.08])
-        self.assertListEqual(vertex_coord[1], [0.0, 2.5, 1.08])
-
-        vertex_coord = self.vertex_from_edge_coord((0, 0, 0.98), "E_Core")
-        self.assertListEqual(vertex_coord[0], [0.0, -2.5, 0.98])
-        self.assertListEqual(vertex_coord[1], [0.0, 2.5, 0.98])
-
-        vertex_coord = self.vertex_from_edge_coord((-5.5, 0, 1.08), "E_Core")
-        self.assertListEqual(vertex_coord[0], [-5.5, -2.5, 1.08])
-        self.assertListEqual(vertex_coord[1], [-5.5, 2.5, 1.08])
-
-    def test_02_layer_turns(self):
+    def test_01_layer_turns(self):
         """
         Check that only 7 turns are created on layer 8
         """
@@ -189,7 +173,7 @@ class TestIEEE(BaseAEDT):
         layers_list = self.m3d.modeler.get_matched_object_name("Layer8*Section*")
         self.assertEqual(len(layers_list), 7)
 
-    def test_03_conductor_dimensions(self):
+    def test_02_conductor_dimensions(self):
         """
         Test conductor cross section
         """
@@ -203,7 +187,7 @@ class TestIEEE(BaseAEDT):
         self.assertListEqual(vertex_coord[0], [0.0, 5.68, -0.34])
         self.assertListEqual(vertex_coord[1], [0.0, 5.68, -0.27])
 
-    def test_04_board_dimensions(self):
+    def test_03_board_dimensions(self):
         """
         Test board XYZ dimensions
         """
@@ -222,7 +206,7 @@ class TestIEEE(BaseAEDT):
         self.assertListEqual(vertex_coord[0], [0.0, 2.5, 1.01])
         self.assertListEqual(vertex_coord[1], [0.0, 6.5, 1.01])
 
-    def test_05_solid_loss(self):
+    def test_04_solid_loss(self):
         """
         Validate that SolidLoss are in range of 2% compared to reference
         """
@@ -230,7 +214,7 @@ class TestIEEE(BaseAEDT):
                           0.002791398746, 0.001092512493, 0.0005868312835, 0.0005630288807, 0.0004394943406]
         self.compare_loss("SolidLoss", reference_loss)
 
-    def test_06_core_loss(self):
+    def test_05_core_loss(self):
         """
         Validate that CoreLoss are in range of 2% compared to reference
         """
@@ -238,13 +222,13 @@ class TestIEEE(BaseAEDT):
                           0.000326723, 0.00020805, 0.000132453, 0.000126782, 8.43752e-05]
         self.compare_loss("CoreLoss", reference_loss)
 
-    def test_07_leakage_inductance(self):
+    def test_06_leakage_inductance(self):
         """
         Validate that leakage is in range of 2% difference
         """
         self.compare_leakage("ieee_leakage.tab")
 
-    def test_08_json(self):
+    def test_07_json(self):
         """
         Compare that generated JSON file is the same as example file
         """
@@ -343,6 +327,57 @@ class TestWirewound(BaseAEDT):
         self.compare_leakage("wire_wound.tab")
 
     def test_08_json(self):
+        """
+        Compare that generated JSON file is the same as example file
+        """
+        self.compare_json()
+
+
+class TestGapInfluence(BaseAEDT):
+    @classmethod
+    def setUpClass(cls):
+        cls.input_file = r"src/ElectronicTransformer/examples/demo_gap_influence.json"
+        super(TestGapInfluence, cls).setUpClass()
+
+    def test_01_air_gap(self):
+        """
+        Check that air gap exists only on central leg
+        """
+        vertex_coord = self.vertex_from_edge_coord((0, 0, 1.2805), "RM_Core_Top")
+        self.assertListEqual(vertex_coord[0], [0, -6.4, 1.2805])
+        self.assertListEqual(vertex_coord[1], [0, 6.4, 1.2805])
+
+        vertex_coord = self.vertex_from_edge_coord((0, 0, -1.2805), "RM_Core_Bottom")
+        self.assertListEqual(vertex_coord[0], [0, -6.4, -1.2805])
+        self.assertListEqual(vertex_coord[1], [0, 6.4, -1.2805])
+
+        vertex_coord = self.vertex_from_edge_coord((-18.7, 0, 0), "RM_Core_Bottom")
+        self.assertListAlmostEqual(vertex_coord[0], [-18.7, -2.371782079, 0])
+        self.assertListAlmostEqual(vertex_coord[1], [-18.7, 2.371782079, 0])
+
+    def test_02_solid_loss(self):
+        """
+        Validate that SolidLoss are in range of 2% compared to reference
+        """
+        reference_loss = [[0.07441614777, 0.03841830668, 0.01793546889, 0.008098162492, 0.003709001461,
+                           0.001719827518, 0.000783162344, 0.0004020461219]]
+        self.compare_loss("SolidLoss", reference_loss)
+
+    def test_03_core_loss(self):
+        """
+        Validate that CoreLoss are in range of 2% compared to reference
+        """
+        reference_loss = [[0.000774539, 0.000426522, 0.00023523, 0.000130118, 7.20314e-05,
+                           3.98747e-05, 2.20806e-05, 1.37956e-05]]
+        self.compare_loss("CoreLoss", reference_loss)
+
+    def test_04_leakage_inductance(self):
+        """
+        Validate that leakage is in range of 2% difference
+        """
+        self.compare_leakage("gap_influence_leakage.tab")
+
+    def test_05_json(self):
         """
         Compare that generated JSON file is the same as example file
         """
