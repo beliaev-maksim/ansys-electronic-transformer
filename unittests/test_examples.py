@@ -210,16 +210,16 @@ class TestIEEE(BaseAEDT):
         """
         Validate that SolidLoss are in range of 2% compared to reference
         """
-        reference_loss = [3.080731857, 1.748884788, 0.5832313415, 0.1444371145, 0.03405255505, 0.008900580792,
-                          0.002791398746, 0.001092512493, 0.0005868312835, 0.0005630288807, 0.0004394943406]
+        reference_loss = [0.1035474408, 0.02305190848, 0.005264047956, 0.001412152157, 0.0005821054265, 0.0004035690909,
+                          0.0003653214849, 0.0003579865491, 0.0003591455644, 0.000359511285, 0.0003648278448]
         self.compare_loss("SolidLoss", reference_loss)
 
     def test_05_core_loss(self):
         """
         Validate that CoreLoss are in range of 2% compared to reference
         """
-        reference_loss = [0.000917459, 0.00165295, 0.00167635, 0.00121922, 0.000800248, 0.000512619,
-                          0.000326723, 0.00020805, 0.000132453, 0.000126782, 8.43752e-05]
+        reference_loss = [0.00487814, 0.00317489, 0.00203019, 0.00129321, 0.000823085, 0.000523797,
+                          0.000333353, 0.000212169, 0.000135052, 0.000129268, 8.60161e-05]
         self.compare_loss("CoreLoss", reference_loss)
 
     def test_06_leakage_inductance(self):

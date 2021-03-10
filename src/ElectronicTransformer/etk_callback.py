@@ -6,7 +6,7 @@
 #
 #            ACT Written by : Maksim Beliaev (maksim.beliaev@ansys.com)
 #            Tested by: Mark Christini (mark.christini@ansys.com)
-#            Last updated : 26.01.2021
+#            Last updated : 11.03.2021
 import copy
 import datetime
 import json
@@ -1820,7 +1820,7 @@ class TransformerClass(Step1, Step2, Step3):
         self.module_mesh = self.design.GetModule("MeshSetup")
         self.module_fields_reporter = self.design.GetModule("FieldsReporter")
 
-        args = [transformer_definition, self.project, self.design, self.editor]
+        args = [transformer_definition, self.project, self.design, self.editor, oDesktop]
         all_cores = {'E': ECore, 'EI': EICore, 'U': UCore, 'UI': UICore,
                      'PQ': PQCore, 'ETD': ETDCore, 'EQ': ETDCore,
                      'EC': ETDCore, 'RM': RMCore, 'EP': EPCore,
