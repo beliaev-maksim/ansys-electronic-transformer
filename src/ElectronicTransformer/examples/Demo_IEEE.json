@@ -1,6 +1,6 @@
 {
     "core_dimensions": {
-        "segmentation_angle": 0, 
+        "segmentation_angle": 10, 
         "supplier": "Ferroxcube", 
         "core_type": "EI", 
         "core_model": "E14/3.5/5R", 
