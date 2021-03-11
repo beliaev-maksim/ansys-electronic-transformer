@@ -1189,7 +1189,7 @@ class TransformerClass(Step1, Step2, Step3):
                 if x != y:
                     coupling_coef = "abs(L(Side_{0},Side_{1}))/sqrt(L(Side_{0},Side_{0})*L(Side_{1},Side_{1}))".format(
                                                                                                                 x, y)
-                    equation = "L(Side_{0},Side_{0})*{1}".format(x, coupling_coef)
+                    equation = "L(Side_{0},Side_{0})*(1-sqr({1}))".format(x, coupling_coef)
                     all_leakages["Leakage_Inductance_{}{}".format(x, y)] = equation
 
             list_y.remove(x)
