@@ -20,7 +20,7 @@ class BaseAEDT(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.desktop = Desktop("2021.2")
+        cls.desktop = Desktop("2021.1")
         cls.project = cls.desktop._main.oDesktop.NewProject()
         cls.tests_dir = os.path.abspath(os.path.dirname(__file__))
         cls.root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
