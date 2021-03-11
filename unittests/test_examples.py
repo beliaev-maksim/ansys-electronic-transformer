@@ -7,6 +7,8 @@ from AEDTLib.Maxwell import Maxwell3D
 
 import src.ElectronicTransformer.etk_callback as etk
 
+AEDT_VERSION = "2021.1"
+
 
 class BaseAEDT(TestCase):
     report_path = None
@@ -20,7 +22,7 @@ class BaseAEDT(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.desktop = Desktop("2021.1")
+        cls.desktop = Desktop(AEDT_VERSION)
         cls.project = cls.desktop._main.oDesktop.NewProject()
         cls.tests_dir = os.path.abspath(os.path.dirname(__file__))
         cls.root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
