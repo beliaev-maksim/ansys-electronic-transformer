@@ -359,16 +359,16 @@ class TestGapInfluence(BaseAEDT):
         """
         Validate that SolidLoss are in range of 2% compared to reference
         """
-        reference_loss = [[0.07441614777, 0.03841830668, 0.01793546889, 0.008098162492, 0.003709001461,
-                           0.001719827518, 0.000783162344, 0.0004020461219]]
+        reference_loss = [0.07441614777, 0.03841830668, 0.01793546889, 0.008098162492, 0.003709001461,
+                          0.001719827518, 0.000783162344, 0.0004020461219]
         self.compare_loss("SolidLoss", reference_loss)
 
     def test_03_core_loss(self):
         """
         Validate that CoreLoss are in range of 2% compared to reference
         """
-        reference_loss = [[0.000774539, 0.000426522, 0.00023523, 0.000130118, 7.20314e-05,
-                           3.98747e-05, 2.20806e-05, 1.37956e-05]]
+        reference_loss = [0.000774539, 0.000426522, 0.00023523, 0.000130118, 7.20314e-05,
+                          3.98747e-05, 2.20806e-05, 1.37956e-05]
         self.compare_loss("CoreLoss", reference_loss)
 
     def test_04_leakage_inductance(self):
