@@ -7,7 +7,7 @@ from AEDTLib.Maxwell import Maxwell3D
 
 import src.ElectronicTransformer.etk_callback as etk
 
-AEDT_VERSION = "2021.1"
+AEDT_VERSION = "2021.2"
 
 
 class BaseAEDT(TestCase):
@@ -160,7 +160,7 @@ class BaseAEDT(TestCase):
 class TestIEEE(BaseAEDT):
     @classmethod
     def setUpClass(cls):
-        cls.input_file = r"src/ElectronicTransformer/examples/Demo_IEEE.json"
+        cls.input_file = r"src/ElectronicTransformer/examples/demo_IEEE.json"
         super(TestIEEE, cls).setUpClass()
 
     def test_01_layer_turns(self):
@@ -378,6 +378,167 @@ class TestGapInfluence(BaseAEDT):
         Validate that leakage is in range of 2% difference
         """
         self.compare_leakage("gap_influence_leakage.tab")
+
+    def test_05_json(self):
+        """
+        Compare that generated JSON file is the same as example file
+        """
+        self.compare_json()
+
+
+class TestCoreEC(BaseAEDT):
+    @classmethod
+    def setUpClass(cls):
+        cls.input_file = r"src/ElectronicTransformer/examples/demo_EC.json"
+        super(TestCoreEC, cls).setUpClass()
+
+    def test_01_layer_turns(self):
+        """
+        Check that all objects are created
+        """
+
+        solids_list = self.m3d.modeler.get_objects_in_group("Solids")
+        self.assertListEqual(sorted(solids_list), ['Bobbin', 'EC_Core_Bottom', 'EC_Core_Top', 'Layer1', 'Layer1_1',
+                                                   'Layer1_2', 'Layer1_3', 'Layer1_4', 'Layer1_5', 'Layer1_6',
+                                                   'Layer1_7', 'Layer1_8', 'Layer1_9', 'Layer2', 'Layer2_1', 'Layer2_2',
+                                                   'Layer2_3', 'Layer2_4', 'Layer2_5', 'Layer2_6', 'Layer2_7',
+                                                   'Layer2_8', 'Layer2_9', 'Layer3', 'Layer3_1', 'Layer3_2', 'Layer3_3',
+                                                   'Layer3_4', 'Layer3_5', 'Layer3_6', 'Layer3_7', 'Layer3_8',
+                                                   'Layer3_9', 'Layer4', 'Layer4_1', 'Layer4_2', 'Layer4_3', 'Layer4_4',
+                                                   'Layer4_5', 'Layer4_6', 'Layer4_7', 'Layer4_8', 'Layer4_9', 'Layer5',
+                                                   'Layer5_1', 'Layer5_2', 'Layer5_3', 'Layer5_4', 'Layer5_5',
+                                                   'Layer5_6', 'Layer5_7', 'Layer5_8', 'Layer5_9',
+                                                   'Layer6', 'Layer6_1', 'Layer6_2', 'Layer6_3', 'Layer6_4', 'Layer6_5',
+                                                   'Layer6_6', 'Layer6_7', 'Layer6_8', 'Layer6_9', 'Region'])
+
+        sheets_list = self.m3d.modeler.get_objects_in_group("Solids")
+        self.assertListEqual(sorted(sheets_list), ['Layer1_1_Section1', 'Layer1_2_Section1', 'Layer1_3_Section1',
+                                                   'Layer1_4_Section1', 'Layer1_5_Section1', 'Layer1_6_Section1',
+                                                   'Layer1_7_Section1', 'Layer1_8_Section1', 'Layer1_9_Section1',
+                                                   'Layer1_Section1', 'Layer2_1_Section1', 'Layer2_2_Section1',
+                                                   'Layer2_3_Section1', 'Layer2_4_Section1', 'Layer2_5_Section1',
+                                                   'Layer2_6_Section1', 'Layer2_7_Section1', 'Layer2_8_Section1',
+                                                   'Layer2_9_Section1', 'Layer2_Section1', 'Layer3_1_Section1',
+                                                   'Layer3_2_Section1', 'Layer3_3_Section1', 'Layer3_4_Section1',
+                                                   'Layer3_5_Section1', 'Layer3_6_Section1', 'Layer3_7_Section1',
+                                                   'Layer3_8_Section1', 'Layer3_9_Section1', 'Layer3_Section1',
+                                                   'Layer4_1_Section1', 'Layer4_2_Section1', 'Layer4_3_Section1',
+                                                   'Layer4_4_Section1', 'Layer4_5_Section1', 'Layer4_6_Section1',
+                                                   'Layer4_7_Section1', 'Layer4_8_Section1', 'Layer4_9_Section1',
+                                                   'Layer4_Section1', 'Layer5_1_Section1', 'Layer5_2_Section1',
+                                                   'Layer5_3_Section1', 'Layer5_4_Section1', 'Layer5_5_Section1',
+                                                   'Layer5_6_Section1', 'Layer5_7_Section1', 'Layer5_8_Section1',
+                                                   'Layer5_9_Section1', 'Layer5_Section1', 'Layer6_1_Section1',
+                                                   'Layer6_2_Section1', 'Layer6_3_Section1', 'Layer6_4_Section1',
+                                                   'Layer6_5_Section1', 'Layer6_6_Section1', 'Layer6_7_Section1',
+                                                   'Layer6_8_Section1', 'Layer6_9_Section1', 'Layer6_Section1'])
+
+    def test_02_conductor_dimensions(self):
+        """
+        Test conductor cross section
+        """
+        # height
+        vertex_coord = self.vertex_from_edge_coord((0, 6.7, 11.05), "Layer5", sort_key=2)
+        self.assertListEqual(vertex_coord[0], [0, 6.7, 9.95])
+        self.assertListEqual(vertex_coord[1], [0, 6.7, 12.15])
+
+        # width
+        vertex_coord = self.vertex_from_edge_coord((0, 6.6, 12.15), "Layer5")
+        self.assertListEqual(vertex_coord[0], [0, 6.5, 12.15])
+        self.assertListEqual(vertex_coord[1], [0, 6.7, 12.15])
+
+        #
+        vertex_coord = self.vertex_from_edge_coord((0, 6.6, 9.85), "Layer5_1", sort_key=2)
+        self.assertListEqual(vertex_coord[0], [0, 6.5, 9.85])
+        self.assertListEqual(vertex_coord[1], [0, 6.7, 9.85])
+
+    def test_03_solid_loss(self):
+        """
+        Validate that SolidLoss are in range of 2% compared to reference
+        """
+        reference_loss = [0.48166285380000001, 0.12871921159999999, 0.051960901009999998,
+                          0.034661488040000001, 0.029949885039999999, 0.028715741239999999, 0.02929752683]
+        self.compare_loss("SolidLoss", reference_loss)
+
+    def test_04_core_loss(self):
+        """
+        Validate that CoreLoss are in range of 2% compared to reference
+        """
+        reference_loss = [0.013777299999999999, 0.0069939700000000004, 0.0035386599999999999,
+                          0.0017938800000000001, 0.00091125600000000005, 0.000461817, 0.000233544]
+        self.compare_loss("CoreLoss", reference_loss)
+
+    def test_05_leakage_inductance(self):
+        """
+        Validate that leakage is in range of 2% difference
+        """
+        self.compare_leakage("ec_leakage.tab")
+
+    def test_06_json(self):
+        """
+        Compare that generated JSON file is the same as example file
+        """
+        self.compare_json()
+
+
+class TestCoreU(BaseAEDT):
+    @classmethod
+    def setUpClass(cls):
+        cls.input_file = r"src/ElectronicTransformer/examples/demo_U_skinlayers.json"
+        super(TestCoreU, cls).setUpClass()
+
+    def test_01_skins(self):
+        """
+        Check skin layers
+        """
+        # conductor
+        vertex_coord = self.vertex_from_edge_coord((-5.232730116, 14.25, 10.15), "Layer2_1", sort_key=2)
+        self.assertListAlmostEqual(vertex_coord[0], [-5.232730116, 14.25, 8.65])
+        self.assertListAlmostEqual(vertex_coord[1], [-5.232730116, 14.25, 11.65])
+
+        # outside skins
+        vertex_coord = self.vertex_from_edge_coord((-5.230450129, 14.14550966, 10.15), "Layer2_skin_1_out_1",
+                                                   sort_key=2)
+        self.assertListAlmostEqual(vertex_coord[0], [-5.230450129, 14.14550966, 8.65])
+        self.assertListAlmostEqual(vertex_coord[1], [-5.230450129, 14.14550966, 11.65])
+
+        vertex_coord = self.vertex_from_edge_coord((-5.228170142, 14.04101932, 10.15), "Layer2_skin_1_skin_2_out_1",
+                                                   sort_key=2)
+        self.assertListAlmostEqual(vertex_coord[0], [-5.228170142, 14.04101932, 8.65])
+        self.assertListAlmostEqual(vertex_coord[1], [-5.228170142, 14.04101932, 11.65])
+
+        # inside skins
+        vertex_coord = self.vertex_from_edge_coord((-5.171829858, 11.45898068, 10.15), "Layer2_skin_1_skin_2_in_1",
+                                                   sort_key=2)
+        self.assertListAlmostEqual(vertex_coord[0], [-5.171829858, 11.45898068, 8.65])
+        self.assertListAlmostEqual(vertex_coord[1], [-5.171829858, 11.45898068, 11.65])
+
+        vertex_coord = self.vertex_from_edge_coord((-5.169549871, 11.35449034, 10.15), "Layer2_skin_1_in_1",
+                                                   sort_key=2)
+        self.assertListAlmostEqual(vertex_coord[0], [-5.169549871, 11.35449034, 8.65])
+        self.assertListAlmostEqual(vertex_coord[1], [-5.169549871, 11.35449034, 11.65])
+
+    def test_02_solid_loss(self):
+        """
+        Validate that SolidLoss are in range of 2% compared to reference
+        """
+        reference_loss = [0.48166285380000001, 0.12871921159999999, 0.051960901009999998,
+                          0.034661488040000001, 0.029949885039999999, 0.028715741239999999, 0.02929752683]
+        self.compare_loss("SolidLoss", reference_loss)
+
+    def test_03_core_loss(self):
+        """
+        Validate that CoreLoss are in range of 2% compared to reference
+        """
+        reference_loss = [0.013777299999999999, 0.0069939700000000004, 0.0035386599999999999,
+                          0.0017938800000000001, 0.00091125600000000005, 0.000461817, 0.000233544]
+        self.compare_loss("CoreLoss", reference_loss)
+
+    def test_04_leakage_inductance(self):
+        """
+        Validate that leakage is in range of 2% difference
+        """
+        self.compare_leakage("ec_leakage.tab")
 
     def test_05_json(self):
         """
