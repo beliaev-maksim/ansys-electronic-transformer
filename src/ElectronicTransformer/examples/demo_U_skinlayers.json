@@ -46,7 +46,7 @@
         "adaptive_frequency": "100.0", 
         "draw_skin_layers": true, 
         "percentage_error": "1.0", 
-        "number_passes": 5, 
+        "number_passes": 1,
         "transformer_sides": 2, 
         "side_loads": [
             9.9999999999999995e-07, 

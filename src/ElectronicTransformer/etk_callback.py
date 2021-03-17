@@ -1179,6 +1179,10 @@ class TransformerClass(Step1, Step2, Step3):
         For N winding transformer would be N*(N-1)/2 equations"""
 
         transformer_sides = transformer_definition["setup_definition"]["transformer_sides"]
+        if transformer_sides <= 1:
+            add_info_message("Transformer has only one side, skip report for Leakage Inductance")
+            return
+
         list_x = list(range(1, transformer_sides + 1))
         list_y = list_x[:]
 
@@ -1193,9 +1197,6 @@ class TransformerClass(Step1, Step2, Step3):
                     all_leakages["Leakage_Inductance_{}{}".format(x, y)] = equation
 
             list_y.remove(x)
-
-        if transformer_sides <= 1:
-            all_leakages["Leakage_Inductance_11"] = "L(Side_1,Side_1)"
 
         self.module_report.CreateReport("Leakage Inductance", "EddyCurrent", "Data Table", "Setup1 : LastAdaptive",
                                         [

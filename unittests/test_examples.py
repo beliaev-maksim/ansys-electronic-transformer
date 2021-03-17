@@ -29,8 +29,8 @@ class BaseAEDT(TestCase):
         cls.report_path = os.path.join(cls.tests_dir, "report.tab")
         etk.oDesktop = cls.desktop._main.oDesktop
 
-        with open(os.path.join(cls.root_dir, cls.input_file)) as file:
-            etk.transformer_definition = json.load(file)
+        with open(os.path.join(cls.root_dir, cls.input_file)) as input_file:
+            etk.transformer_definition = json.load(input_file)
         etk.transformer_definition["setup_definition"]["project_path"] = cls.tests_dir
 
         cls.transformer = etk.TransformerClass(None)
@@ -119,7 +119,8 @@ class BaseAEDT(TestCase):
 
                 for actual, ref in zip(actual_result, ref_result):
                     self.assertAlmostEqual(actual, ref, delta=ref*0.02,
-                                           msg="Error at frequency {}kHz".format(ref_result[0]))
+                                           msg="Error at frequency {}kHz. Report is {}".format(ref_result[0],
+                                                                                               actual_result))
 
     def compare_loss(self, loss_type, reference_list):
         """
@@ -373,13 +374,7 @@ class TestGapInfluence(BaseAEDT):
                           3.98747e-05, 2.20806e-05, 1.37956e-05]
         self.compare_loss("CoreLoss", reference_loss)
 
-    def test_04_leakage_inductance(self):
-        """
-        Validate that leakage is in range of 2% difference
-        """
-        self.compare_leakage("gap_influence_leakage.tab")
-
-    def test_05_json(self):
+    def test_04_json(self):
         """
         Compare that generated JSON file is the same as example file
         """
@@ -411,7 +406,7 @@ class TestCoreEC(BaseAEDT):
                                                    'Layer6', 'Layer6_1', 'Layer6_2', 'Layer6_3', 'Layer6_4', 'Layer6_5',
                                                    'Layer6_6', 'Layer6_7', 'Layer6_8', 'Layer6_9', 'Region'])
 
-        sheets_list = self.m3d.modeler.get_objects_in_group("Solids")
+        sheets_list = self.m3d.modeler.get_objects_in_group("Sheets")
         self.assertListEqual(sorted(sheets_list), ['Layer1_1_Section1', 'Layer1_2_Section1', 'Layer1_3_Section1',
                                                    'Layer1_4_Section1', 'Layer1_5_Section1', 'Layer1_6_Section1',
                                                    'Layer1_7_Section1', 'Layer1_8_Section1', 'Layer1_9_Section1',
@@ -522,23 +517,21 @@ class TestCoreU(BaseAEDT):
         """
         Validate that SolidLoss are in range of 2% compared to reference
         """
-        reference_loss = [0.48166285380000001, 0.12871921159999999, 0.051960901009999998,
-                          0.034661488040000001, 0.029949885039999999, 0.028715741239999999, 0.02929752683]
+        reference_loss = [5.01460095]
         self.compare_loss("SolidLoss", reference_loss)
 
     def test_03_core_loss(self):
         """
         Validate that CoreLoss are in range of 2% compared to reference
         """
-        reference_loss = [0.013777299999999999, 0.0069939700000000004, 0.0035386599999999999,
-                          0.0017938800000000001, 0.00091125600000000005, 0.000461817, 0.000233544]
+        reference_loss = [0.000101699]
         self.compare_loss("CoreLoss", reference_loss)
 
     def test_04_leakage_inductance(self):
         """
         Validate that leakage is in range of 2% difference
         """
-        self.compare_leakage("ec_leakage.tab")
+        self.compare_leakage("u_leakage.tab")
 
     def test_05_json(self):
         """
