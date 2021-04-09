@@ -1,6 +1,6 @@
 {
     "core_dimensions": {
-        "segmentation_angle": 0, 
+        "segmentation_angle": 10, 
         "supplier": "Ferroxcube", 
         "core_type": "EI", 
         "core_model": "E14/3.5/5R", 
@@ -13,9 +13,7 @@
         "D_7": "0.8", 
         "D_8": "1.8", 
         "airgap": {
-            "define_airgap": true, 
-            "airgap_on_leg": "Center", 
-            "airgap_value": "0.1"
+            "define_airgap": false
         }
     }, 
     "winding_definition": {
