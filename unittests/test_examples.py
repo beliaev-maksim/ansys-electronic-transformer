@@ -1,7 +1,7 @@
 import json
 import os
 import shutil
-from unittest import TestCase
+import unittest
 from AEDTLib.Desktop import Desktop
 from AEDTLib.Maxwell import Maxwell3D
 
@@ -10,7 +10,7 @@ import src.ElectronicTransformer.etk_callback as etk
 AEDT_VERSION = "2021.2"
 
 
-class BaseAEDT(TestCase):
+class BaseAEDT(unittest.TestCase):
     report_path = None
     transformer = None
     desktop = None
