@@ -1,6 +1,6 @@
 {
     "core_dimensions": {
-        "segmentation_angle": 10, 
+        "segmentation_angle": 0, 
         "supplier": "Ferroxcube", 
         "core_type": "EI", 
         "core_model": "E14/3.5/5R", 
@@ -79,8 +79,8 @@
     "setup_definition": {
         "core_material": "3F3", 
         "coil_material": "Copper", 
-        "adaptive_frequency": "500.0",
-        "draw_skin_layers": true,
+        "adaptive_frequency": "500.0", 
+        "draw_skin_layers": true, 
         "percentage_error": "1.0", 
         "number_passes": 5, 
         "transformer_sides": 4, 
@@ -94,7 +94,7 @@
         "voltage": "1.0", 
         "offset": "50.0", 
         "full_model": false, 
-        "project_path": "C:/Files/", 
+        "project_path": "D:/Files/", 
         "frequency_sweep_definition": {
             "frequency_sweep": true, 
             "start_frequency": "1.0", 
